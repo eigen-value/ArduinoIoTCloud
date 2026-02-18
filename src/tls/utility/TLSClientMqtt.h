@@ -62,7 +62,7 @@ enum class ArduinoIoTAuthenticationMode
    */
   #include <WiFiSSLClient.h>
   class TLSClientMqtt : public WiFiSSLClient {
-#elif defined(BOARD_ESP) || defined(ARDUINO_RASPBERRY_PI_PICO_W)
+#elif not defined(CONFIG_IDF_TARGET_ESP32S3) && defined(ARDUINO_RASPBERRY_PI_PICO_W)
   /*
    * ESP32*
    * ESP82*
@@ -70,6 +70,9 @@ enum class ArduinoIoTAuthenticationMode
    */
   #include <WiFiClientSecure.h>
   class TLSClientMqtt : public WiFiClientSecure {
+#elif defined(CONFIG_IDF_TARGET_ESP32S3)
+  #include <EG915GSM.h>
+  class TLSClientMqtt : public GSMSSLClient {
 #endif
 
 public:
