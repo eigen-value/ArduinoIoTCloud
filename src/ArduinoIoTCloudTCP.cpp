@@ -208,14 +208,14 @@ void ArduinoIoTCloudTCP::update()
   State next_state = _state;
   switch (_state)
   {
-  case State::ConfigPhy:            Serial.println("configphy");next_state = handle_ConfigPhy();            break;
-  case State::UpdatePhy:            Serial.println("updatephy");next_state = handle_UpdatePhy();            break;
-  case State::Init:                 Serial.println("initializ");next_state = handle_Init();                 break;
-  case State::ConnectPhy:           Serial.println("connecphy");next_state = handle_ConnectPhy();           break;
-  case State::SyncTime:             Serial.println("syncrtime");next_state = handle_SyncTime();             break;
-  case State::ConnectMqttBroker:    Serial.println("connemqtt");next_state = handle_ConnectMqttBroker();    break;
-  case State::Connected:            Serial.println("connected");next_state = handle_Connected();            break;
-  case State::Disconnect:           Serial.println("disconnec");next_state = handle_Disconnect();           break;
+  case State::ConfigPhy:            next_state = handle_ConfigPhy();            break;
+  case State::UpdatePhy:            next_state = handle_UpdatePhy();            break;
+  case State::Init:                 next_state = handle_Init();                 break;
+  case State::ConnectPhy:           next_state = handle_ConnectPhy();           break;
+  case State::SyncTime:             next_state = handle_SyncTime();             break;
+  case State::ConnectMqttBroker:    next_state = handle_ConnectMqttBroker();    break;
+  case State::Connected:            next_state = handle_Connected();            break;
+  case State::Disconnect:           next_state = handle_Disconnect();           break;
   case State::Disconnected:                                                     break;
   }
 
@@ -350,20 +350,17 @@ ArduinoIoTCloudTCP::State ArduinoIoTCloudTCP::handle_Init()
     watchdog_enable_network_feed(_connection->getInterface());
   }
 #endif
+
   return State::ConnectPhy;
 }
 
 ArduinoIoTCloudTCP::State ArduinoIoTCloudTCP::handle_ConnectPhy()
 {
-Serial.print("\r\n\r\n calling handle_ConnectPhy \r\n\r\n");
-
   if (_connection->check() == NetworkConnectionState::CONNECTED)
-Serial.print("\r\n\r\n syncing time \r\n\r\n");
   {
     if (!_connection_attempt.isRetry() || (_connection_attempt.isRetry() && _connection_attempt.isExpired()))
       return State::SyncTime;
   }
-Serial.print("\r\n\r\n handle_ConnectPhy NOT OK \r\n\r\n");
 
   return State::ConnectPhy;
 }
